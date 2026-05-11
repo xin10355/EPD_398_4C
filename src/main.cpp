@@ -44,10 +44,10 @@
 //GxEPD2_BW<GxEPD2_260_M01, GxEPD2_260_M01::HEIGHT> display(GxEPD2_260_M01(/*CS=5*/ 10, /*DC=*/ 8, /*RST=*/ 7, /*BUSY=*/ 9));
 
 //4.2 GxEPD2_420c
-GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(/*CS=5*/ 10, /*DC=*/ 8, /*RST=*/ 7, /*BUSY=*/ 9));
+// GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(/*CS=5*/ 10, /*DC=*/ 8, /*RST=*/ 7, /*BUSY=*/ 9));
 
 //3.98  GxEPD2_768c_GDEM076F55
-//GxEPD2_4C<GxEPD2_768c_GDEM076F55, GxEPD2_768c_GDEM076F55::HEIGHT> display(GxEPD2_768c_GDEM076F55(/*CS=5*/ 10, /*DC=*/ 8, /*RST=*/ 7, /*BUSY=*/ 9));
+GxEPD2_4C<GxEPD2_768c_GDEM076F55, GxEPD2_768c_GDEM076F55::HEIGHT> display(GxEPD2_768c_GDEM076F55(/*CS=5*/ 10, /*DC=*/ 8, /*RST=*/ 7, /*BUSY=*/ 9));
 
 // for handling alternative SPI pins (ESP32, RP2040) see example GxEPD2_Example.ino
 
@@ -130,7 +130,7 @@ void drawTextInCircle()
     display.fillCircle(centerX, centerY, radius, GxEPD_BLACK);
 
     // 2. 计算文字居中位置
-    display.setTextColor(GxEPD_RED);
+    display.setTextColor(GxEPD_YELLOW);
     int16_t tbx, tby; uint16_t tbw, tbh;
     display.getTextBounds(text, 0, 0, &tbx, &tby, &tbw, &tbh);
     

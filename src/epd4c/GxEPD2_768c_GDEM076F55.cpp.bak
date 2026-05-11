@@ -13,6 +13,9 @@
 
 #include "GxEPD2_768c_GDEM076F55.h"
 
+/**
+ * @brief 构造函数，初始化GxEPD2_768c_GDEM076F55对象
+ */
 GxEPD2_768c_GDEM076F55::GxEPD2_768c_GDEM076F55(int16_t cs, int16_t dc, int16_t rst, int16_t busy) :
   GxEPD2_EPD(cs, dc, rst, busy, LOW, 50000000, WIDTH, HEIGHT, panel, hasColor, hasPartialUpdate, hasFastPartialUpdate)
 {
@@ -20,6 +23,9 @@ GxEPD2_768c_GDEM076F55::GxEPD2_768c_GDEM076F55(int16_t cs, int16_t dc, int16_t r
   _use_fast_update = useFastFullUpdate;
 }
 
+/**
+ * @brief 选择快速全屏更新模式
+ */
 void GxEPD2_768c_GDEM076F55::selectFastFullUpdate(bool ff)
 {
   if (ff != _use_fast_update)
@@ -29,25 +35,37 @@ void GxEPD2_768c_GDEM076F55::selectFastFullUpdate(bool ff)
   }
 }
 
+/**
+ * @brief 使用单一颜色值清屏
+ */
 void GxEPD2_768c_GDEM076F55::clearScreen(uint8_t value)
 {
   clearScreen(value, 0xFF);
 }
 
+/**
+ * @brief 使用指定的黑白值清屏
+ */
 void GxEPD2_768c_GDEM076F55::clearScreen(uint8_t black_value, uint8_t color_value)
 {
   writeScreenBuffer(black_value, color_value);
   refresh();
 }
 
+/**
+ * @brief 将指定值写入屏幕缓冲区
+ */
 void GxEPD2_768c_GDEM076F55::writeScreenBuffer(uint8_t value)
 {
   writeScreenBuffer(value, 0xFF);
 }
 
+/**
+ * @brief 将指定的黑白值写入屏幕缓冲区
+ */
 void GxEPD2_768c_GDEM076F55::writeScreenBuffer(uint8_t black_value, uint8_t color_value)
 {
-  //Serial.println("writeScreenBuffer");
+  Serial.println("writeScreenBuffer");
   if (!_init_display_done) _InitDisplay();
   _writeCommand(0x10);
   _startTransfer();
@@ -59,8 +77,12 @@ void GxEPD2_768c_GDEM076F55::writeScreenBuffer(uint8_t black_value, uint8_t colo
   _initial_write = false; // initial full screen buffer clean done
 }
 
+/**
+ * @brief 向屏幕写入单色位图
+ */
 void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t bitmap[], int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeImage("); Serial.print(invert); Serial.print(mirror_y);
   //Serial.print("writeImage("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
   //Serial.print(w); Serial.print(", "); Serial.print(h); Serial.println(")");
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
@@ -184,8 +206,12 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t bitmap[], int16_t x, int16
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 向屏幕写入黑白和彩色位图
+ */
 void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t* black, const uint8_t* color, int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeImage1("); Serial.print(invert); Serial.print(mirror_y);
   if (!black && !color) return;
   if (!color) return writeImage(black, x, y, w, h, invert, mirror_y, pgm);
   //Serial.print("writeImage("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
@@ -294,7 +320,7 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t* black, const uint8_t* col
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
+      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
       {
         for (int16_t j = 0; j < int16_t(WIDTH); j += 8)
         {
@@ -344,9 +370,13 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t* black, const uint8_t* col
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 写入部分位图到屏幕
+ */
 void GxEPD2_768c_GDEM076F55::writeImagePart(const uint8_t bitmap[], int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeImagePart("); Serial.print(invert); Serial.print(mirror_y);
   //Serial.print("writeImagePart("); Serial.print(x_part); Serial.print(", "); Serial.print(y_part); Serial.print(", ");
   //Serial.print(w_bitmap); Serial.print(", "); Serial.print(h_bitmap); Serial.print(", ");
   //Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
@@ -451,9 +481,13 @@ void GxEPD2_768c_GDEM076F55::writeImagePart(const uint8_t bitmap[], int16_t x_pa
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 写入部分黑白和彩色位图到屏幕
+ */
 void GxEPD2_768c_GDEM076F55::writeImagePart(const uint8_t* black, const uint8_t* color, int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeImagePart1("); Serial.print(invert); Serial.print(mirror_y);
   //Serial.print("writeImagePart("); Serial.print(x_part); Serial.print(", "); Serial.print(y_part); Serial.print(", ");
   //Serial.print(w_bitmap); Serial.print(", "); Serial.print(h_bitmap); Serial.print(", ");
   //Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
@@ -581,8 +615,12 @@ void GxEPD2_768c_GDEM076F55::writeImagePart(const uint8_t* black, const uint8_t*
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 写入原生数据到屏幕
+ */
 void GxEPD2_768c_GDEM076F55::writeNative(const uint8_t* data1, const uint8_t* data2, int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeNative("); Serial.print(invert); Serial.print(mirror_y);
   if (!data1) return;
   //Serial.print("writeNative("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
   //Serial.print(w); Serial.print(", "); Serial.print(h); Serial.println(")");
@@ -660,7 +698,7 @@ void GxEPD2_768c_GDEM076F55::writeNative(const uint8_t* data1, const uint8_t* da
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
+      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
       {
         for (int16_t j = 0; j < int16_t(WIDTH); j += 4)
         {
@@ -695,9 +733,13 @@ void GxEPD2_768c_GDEM076F55::writeNative(const uint8_t* data1, const uint8_t* da
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 写入部分原生数据到屏幕
+ */
 void GxEPD2_768c_GDEM076F55::writeNativePart(const uint8_t* data1, const uint8_t* data2, int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
+  Serial.println("writeNative1("); Serial.print(invert); Serial.print(mirror_y);
   if (!data1) return;
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
   if (!_init_display_done) _InitDisplay();
@@ -788,12 +830,18 @@ void GxEPD2_768c_GDEM076F55::writeNativePart(const uint8_t* data1, const uint8_t
   delay(1); // yield() to avoid WDT on ESP8266 and ESP32
 }
 
+/**
+ * @brief 绘制图像并刷新显示
+ */
 void GxEPD2_768c_GDEM076F55::drawImage(const uint8_t bitmap[], int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
   writeImage(bitmap, x, y, w, h, invert, mirror_y, pgm);
   refresh(x, y, w, h);
 }
 
+/**
+ * @brief 绘制部分图像并刷新显示
+ */
 void GxEPD2_768c_GDEM076F55::drawImagePart(const uint8_t bitmap[], int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
@@ -801,12 +849,18 @@ void GxEPD2_768c_GDEM076F55::drawImagePart(const uint8_t bitmap[], int16_t x_par
   refresh(x, y, w, h);
 }
 
+/**
+ * @brief 绘制黑白彩色图像并刷新显示
+ */
 void GxEPD2_768c_GDEM076F55::drawImage(const uint8_t* black, const uint8_t* color, int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
   writeImage(black, color, x, y, w, h, invert, mirror_y, pgm);
   refresh(x, y, w, h);
 }
 
+/**
+ * @brief 绘制黑白彩色部分图像并刷新显示
+ */
 void GxEPD2_768c_GDEM076F55::drawImagePart(const uint8_t* black, const uint8_t* color, int16_t x_part, int16_t y_part, int16_t w_bitmap, int16_t h_bitmap,
     int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
@@ -814,18 +868,27 @@ void GxEPD2_768c_GDEM076F55::drawImagePart(const uint8_t* black, const uint8_t* 
   refresh(x, y, w, h);
 }
 
+/**
+ * @brief 绘制原生数据并刷新显示
+ */
 void GxEPD2_768c_GDEM076F55::drawNative(const uint8_t* data1, const uint8_t* data2, int16_t x, int16_t y, int16_t w, int16_t h, bool invert, bool mirror_y, bool pgm)
 {
   writeNative(data1, data2, x, y, w, h, invert, mirror_y, pgm);
   refresh(x, y, w, h);
 }
 
+/**
+ * @brief 刷新整个屏幕或部分区域
+ */
 void GxEPD2_768c_GDEM076F55::refresh(bool partial_update_mode)
 {
   if (hasPartialUpdate) _setPartialRamArea(0, 0, WIDTH, HEIGHT);
   _refresh(partial_update_mode);
 }
 
+/**
+ * @brief 刷新指定区域
+ */
 void GxEPD2_768c_GDEM076F55::refresh(int16_t x, int16_t y, int16_t w, int16_t h)
 {
   // intersection with screen
@@ -845,11 +908,17 @@ void GxEPD2_768c_GDEM076F55::refresh(int16_t x, int16_t y, int16_t w, int16_t h)
   _refresh(!fullscreen);
 }
 
+/**
+ * @brief 关闭电源
+ */
 void GxEPD2_768c_GDEM076F55::powerOff()
 {
   _PowerOff();
 }
 
+/**
+ * @brief 进入休眠模式
+ */
 void GxEPD2_768c_GDEM076F55::hibernate()
 {
   _PowerOff();
@@ -862,6 +931,9 @@ void GxEPD2_768c_GDEM076F55::hibernate()
   }
 }
 
+/**
+ * @brief 设置分页模式
+ */
 void GxEPD2_768c_GDEM076F55::setPaged()
 {
   if (!hasPartialUpdate)
@@ -872,6 +944,9 @@ void GxEPD2_768c_GDEM076F55::setPaged()
   }
 }
 
+/**
+ * @brief 执行刷新操作
+ */
 void GxEPD2_768c_GDEM076F55::_refresh(bool partial_update_mode)
 {
   _writeCommand(0x50); // VCOM and Data Interval Setting
@@ -884,10 +959,13 @@ void GxEPD2_768c_GDEM076F55::_refresh(bool partial_update_mode)
   _init_display_done = false; // needed
 }
 
+/**
+ * @brief 设置部分RAM区域
+ */
 void GxEPD2_768c_GDEM076F55::_setPartialRamArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool partial_mode)
 {
-  //Serial.print("_setPartialRamArea("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
-  //Serial.print(w); Serial.print(", "); Serial.print(h); Serial.println(")");
+  Serial.print("_setPartialRamArea("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(", ");
+  Serial.print(w); Serial.print(", "); Serial.print(h); Serial.println(")");
   _writeCommand(0x83);
   _writeData(x / 256);
   _writeData(x % 256);
@@ -900,6 +978,9 @@ void GxEPD2_768c_GDEM076F55::_setPartialRamArea(uint16_t x, uint16_t y, uint16_t
   _writeData(partial_mode ? 0x01 : 0x00);
 }
 
+/**
+ * @brief 开启电源
+ */
 void GxEPD2_768c_GDEM076F55::_PowerOn()
 {
   if (!_power_is_on)
@@ -910,6 +991,9 @@ void GxEPD2_768c_GDEM076F55::_PowerOn()
   _power_is_on = true;
 }
 
+/**
+ * @brief 关闭电源
+ */
 void GxEPD2_768c_GDEM076F55::_PowerOff()
 {
   if (_power_is_on)
@@ -921,9 +1005,12 @@ void GxEPD2_768c_GDEM076F55::_PowerOff()
   _power_is_on = false;
 }
 
+/**
+ * @brief 初始化显示控制器
+ */
 void GxEPD2_768c_GDEM076F55::_InitDisplay()
 {
-  //Serial.println("_InitDisplay");
+  Serial.println("_InitDisplay");
   // initcode from Good Dispay demo for GDEY029F51H
   if ((_rst >= 0) && (_hibernating || _initial_write))
   {
@@ -991,10 +1078,15 @@ void GxEPD2_768c_GDEM076F55::_InitDisplay()
   }
   _PowerOn();
   _init_display_done = true;
+  Serial.println("_InitDisplay OK");
 }
 
+/**
+ * @brief 反转数据位
+ */
 uint8_t GxEPD2_768c_GDEM076F55::_invert(uint8_t data)
 {
+  Serial.println("_invert 11");
   uint8_t result = 0x00;
   for (int i = 0; i < 4; i++)
   {
@@ -1009,5 +1101,6 @@ uint8_t GxEPD2_768c_GDEM076F55::_invert(uint8_t data)
     data >>= 2;
     result >>= 2;
   }
+  Serial.println("_invert 11 end");
   return result;
 }
