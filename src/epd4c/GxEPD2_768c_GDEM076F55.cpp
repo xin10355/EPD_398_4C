@@ -169,8 +169,10 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t bitmap[], int16_t x, int16
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
+      // Transmit scanlines interleaved: top, bottom, next top, next bottom... to match controller scanning
+      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
       {
+        int16_t i = (t % 2 == 0) ? (t / 2) : (HEIGHT - 1 - t / 2);
         for (int16_t j = 0; j < int16_t(WIDTH); j += 8)
         {
           uint8_t data = 0xFF;
@@ -320,8 +322,10 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t* black, const uint8_t* col
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
+      // Transmit scanlines interleaved: top, bottom, next top, next bottom... to match controller scanning
+      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
       {
+        int16_t i = (t % 2 == 0) ? (t / 2) : (HEIGHT - 1 - t / 2);
         for (int16_t j = 0; j < int16_t(WIDTH); j += 8)
         {
           uint8_t black_data = 0xFF, color_data = 0xFF;
@@ -698,8 +702,10 @@ void GxEPD2_768c_GDEM076F55::writeNative(const uint8_t* data1, const uint8_t* da
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
+      // Transmit scanlines interleaved: top, bottom, next top, next bottom... to match controller scanning
+      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
       {
+        int16_t i = (t % 2 == 0) ? (t / 2) : (HEIGHT - 1 - t / 2);
         for (int16_t j = 0; j < int16_t(WIDTH); j += 4)
         {
           uint8_t data = 0x55;
