@@ -320,7 +320,7 @@ void GxEPD2_768c_GDEM076F55::writeImage(const uint8_t* black, const uint8_t* col
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
+      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
       {
         for (int16_t j = 0; j < int16_t(WIDTH); j += 8)
         {
@@ -698,7 +698,7 @@ void GxEPD2_768c_GDEM076F55::writeNative(const uint8_t* data1, const uint8_t* da
       if ((w <= 0) || (h <= 0)) return;
       _writeCommand(0x10);
       _startTransfer();
-      for (int16_t t = 0; t < int16_t(HEIGHT); t++)
+      for (int16_t i = 0; i < int16_t(HEIGHT); i++)
       {
         for (int16_t j = 0; j < int16_t(WIDTH); j += 4)
         {
