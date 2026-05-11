@@ -159,6 +159,18 @@ class GxEPD2_4C : public GxEPD2_GFX_BASE_CLASS
       // 再次检查偏移后的坐标是否落在定义的局部窗口范围内，不在范围内则直接返回。
       if ((x < 0) || (x >= int16_t(_pw_w)) || (y < 0) || (y >= int16_t(_pw_h))) return;
 
+      // 特殊驱动IC映射：针对 3.98/4.01 寸这类双扫描 (Dual Gate) 屏幕的修正
+      // 物理上：上半部 (0-275) 自上而下，下半部 (551-276) 自下而上。
+      // 缓冲区：Row 0, 551, 1, 550 ... 依次交错排列。
+      if (y < (HEIGHT / 2)) {
+        y = y * 2; // 上半部映射到缓冲区的偶数行
+      } else {
+        y = ((HEIGHT - 1) - y) * 2 + 1; // 下半部映射到缓冲区的奇数行
+      }
+
+      // 全局水平翻转：修正整块屏幕的镜像问题，或者在setup()使用 display.mirror(true);
+      // x = int16_t(_pw_w) - 1 - x;
+
       // 分页渲染逻辑 (Paged Rendering)
       // adjust for current page
       y -= _current_page * _page_height;

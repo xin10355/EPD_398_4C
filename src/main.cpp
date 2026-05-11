@@ -55,7 +55,6 @@ const char HelloWorld[] = "Hello World!";
 
 void helloWorld()
 {
-  display.setRotation(0);
   display.setFont(&FreeSansOblique24pt7b);
   display.setTextColor(GxEPD_RED);
   int16_t tbx, tby; uint16_t tbw, tbh;
@@ -76,7 +75,6 @@ void helloWorld()
 
 void drawDiagonalLine()
 {
-  display.setRotation(0);
   display.setFullWindow();
   display.firstPage();
   do
@@ -97,7 +95,6 @@ void drawDiagonalLine()
 
 void drawSolidRectangle()
 {
-  display.setRotation(0);
   display.setFullWindow();
   display.firstPage();
   do
@@ -105,7 +102,7 @@ void drawSolidRectangle()
     display.fillScreen(GxEPD_WHITE);
     
     // 绘制实心黑色长方形：x, y, width, height, color
-    display.fillRect(0, 0, 768, 520, GxEPD_BLACK);
+    display.fillRect(0, 0, display.width(), display.height(), GxEPD_BLACK);
   }
   while (display.nextPage());
 }
@@ -113,7 +110,6 @@ void drawSolidRectangle()
 void drawTextInCircle()
 {
   const char text[] = "ABCDE"; // 要显示的文字
-  display.setRotation(0);
   display.setFont(&FreeSansOblique24pt7b);
   display.setFullWindow();
   display.firstPage();
@@ -179,10 +175,14 @@ void setup()
   Serial.println("Initializing display...");
   //display.init(115200); // default 10ms reset pulse, e.g. for bare panels with DESPI-C02
   display.init(115200, true, 2, false); // USE THIS for Waveshare boards with "clever" reset circuit, 2ms reset pulse
+  
+  display.setRotation(1); // 在这里统一设置旋转角度 (0-3)
+  display.mirror(true);   // 开启软件镜像，以修正该屏幕的物理镜像问题，这样旋转时文字方向依然正确
+
   // helloWorld();
-  // drawDiagonalLine();
-  // drawTopLeftEllipse();
-  drawTextInCircle();
+  drawDiagonalLine();
+
+  // drawTextInCircle();
   display.hibernate();
 }
 
